@@ -26,7 +26,7 @@ app.add_middleware(
 )
 
 # MODEL = tf.keras.models.load_model("../saved_models/1/potato_disease_classifier.h5", compile=False)
-MODEL = tf.keras.models.load_model("../saved_models/2", compile=False)
+MODEL = tf.keras.models.load_model("../saved_models/5", compile=False)
 
 CLASS_NAMES = ["Early Blight","Late Blight","Healthy"]
 
@@ -39,8 +39,8 @@ async def ping():
 def read_file_As_image(data : bytes):
     data = BytesIO(data)
     image = Image.open(data).convert("RGB")
-    image = image.resize((224, 224))  # Resize to match model input size
-    image = np.array(image) / 255.0  # Normalize the image
+    image = image.resize((254, 254))  # Resize to match model input size
+    # image = np.array(image) / 255.0  # Normalize the image
     return np.array(image)
 
 @app.post("/predict")
@@ -59,9 +59,14 @@ async def predict(file: UploadFile = File(...)):
     predicted_label = CLASS_NAMES[np.argmax(prediction)]
     confidence = round(100 * np.max(prediction), 2)
 
+    all_percentages = {
+        CLASS_NAMES[i]: round(100* prediction[i], 2) for i in range(len(CLASS_NAMES))
+    }
+
     return {
         "predicted_label": predicted_label,
-        "confidence": confidence
+        "confidence": confidence,
+        "all_percentages": all_percentages
     }
 
 
