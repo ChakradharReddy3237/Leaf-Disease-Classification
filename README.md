@@ -1,13 +1,5 @@
 # Potato Leaf Disease Classification
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3.9-blue.svg" alt="Python Version">
-  <img src="https://img.shields.io/badge/TensorFlow-2.x-orange.svg" alt="TensorFlow">
-  <img src="https://img.shields.io/badge/React-18.x-blue.svg" alt="React">
-  <img src="https://img.shields.io/badge/API-FastAPI-green.svg" alt="API">
-  <img src="https://img.shields.io/github/license/ChakradharReddy3237/Leaf-Disease-Classification" alt="License">
-</p>
-
 > A deep learning-powered web application to classify potato leaf diseases (Early Blight, Late Blight, & Healthy) from uploaded leaf images.
 
 ---
@@ -18,7 +10,7 @@ This project is a hands-on implementation based on the excellent end-to-end mach
 
 A huge thank you to Dhaval Patel for creating such a high-quality, in-depth tutorial.
 
-*   **You can find the original tutorial playlist on YouTube:** [Deep Learning End To End Project | Potato Disease Classification](https://www.youtube.com/playlist?list=PLeo1K3hjS3uu7clOTflkudt_3pZznA_Y-)
+*   **You can find the original tutorial playlist on YouTube:** [Deep Learning End To End Project | Potato Disease Classification](https://www.youtube.com/watch?v=dGtDTjYs3xc&list=PLeo1K3hjS3utJFNGyBpIvjWgSDY0eOE8S)
 
 ---
 
@@ -64,7 +56,7 @@ Plant diseases are a major threat to food security, and manual detection can be 
 | ----------------- | ----------------------------------------------------------------------------------------------------------- |
 | **Frontend**      | [React.js](https://reactjs.org/), [JavaScript](https://www.javascript.com/)                                  |
 | **Backend**       | [Python](https://www.python.org/), [FastAPI](https://fastapi.tiangolo.com/), [Uvicorn](https://www.uvicorn.org/) |
-| **ML/Deep Learning**| [TensorFlow](https://www.tensorflow.org/), [Keras](https://keras.io/)                                       |
+| **ML/Deep Learning**| [TensorFlow](https://www.tensorflow.org/) |
 | **Dataset**       | [PlantVillage Dataset](https://www.kaggle.com/datasets/emmarex/plantdisease)                                |
 
 ##  System Architecture
@@ -171,6 +163,5 @@ If you have a suggestion that would make this better, please fork the repo and c
 
 ## Acknowledgements
 
-*   **Tutorial:** [Codebasics (Dhaval Patel)](https://www.youtube.com/c/codebasics) for the invaluable project tutorial.
+*   **Tutorial:** [Codebasics (Dhaval Patel)](https://www.youtube.com/watch?v=dGtDTjYs3xc&list=PLeo1K3hjS3utJFNGyBpIvjWgSDY0eOE8S) for the invaluable project tutorial.
 *   **Dataset:** [PlantVillage](https://plantvillage.psu.edu/)
-*   **Badges:** [Shields.io](https://shields.io/)
