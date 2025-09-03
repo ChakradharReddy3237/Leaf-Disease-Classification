@@ -1,3 +1,5 @@
+// frontend/src/home.js (Corrected to match your new TF-Serving backend)
+
 import { useState, useEffect, useCallback } from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -68,22 +70,14 @@ const useStyles = makeStyles((theme) => ({
   imageCard: {
     margin: "auto",
     maxWidth: 400,
-    height: 500,
+    minHeight: 500,
+    height: 'auto',
     backgroundColor: 'transparent',
     boxShadow: '0px 9px 70px 0px rgb(0 0 0 / 30%) !important',
     borderRadius: '15px',
-    transition: 'height 0.3s ease-in-out',
-  },
-  imageCardExpanded: {
-    height: 'auto',
   },
   imageCardEmpty: {
     height: 'auto',
-  },
-  noImage: {
-    margin: "auto",
-    width: 400,
-    height: "400 !important",
   },
   input: {
     display: 'none',
@@ -92,18 +86,13 @@ const useStyles = makeStyles((theme) => ({
     background: 'white',
   },
   tableContainer: {
-    backgroundColor: 'transparent !important',
-    boxShadow: 'none !important',
+    backgroundColor: 'white',
+    boxShadow: '0px 2px 10px rgba(0,0,0,0.1)',
+    borderRadius: '8px',
   },
-  table: {
-    backgroundColor: 'transparent !important',
-  },
-  tableHead: {
-    backgroundColor: 'transparent !important',
-  },
-  tableRow: {
-    backgroundColor: 'transparent !important',
-  },
+  table: { backgroundColor: 'transparent !important' },
+  tableHead: { backgroundColor: 'transparent !important' },
+  tableRow: { backgroundColor: 'transparent !important' },
   tableCell: {
     fontSize: '22px',
     backgroundColor: 'transparent !important',
@@ -113,24 +102,15 @@ const useStyles = makeStyles((theme) => ({
     padding: '1px 24px 1px 16px',
   },
   tableCell1: {
-    fontSize: '14px',
+    fontSize: '18px',
     backgroundColor: 'transparent !important',
     borderColor: 'transparent !important',
     color: '#000000a6 !important',
     fontWeight: 'bolder',
     padding: '1px 24px 1px 16px',
   },
-  tableBody: {
-    backgroundColor: 'transparent !important',
-  },
-  text: {
-    color: 'white !important',
-    textAlign: 'center',
-  },
-  buttonGrid: {
-    maxWidth: "416px",
-    width: "100%",
-  },
+  tableBody: { backgroundColor: 'transparent !important' },
+  buttonGrid: { maxWidth: "416px", width: "100%" },
   detail: {
     backgroundColor: 'white',
     display: 'flex',
@@ -138,37 +118,14 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  appbar: {
-    background: '#be6a77',
-    boxShadow: 'none',
-    color: 'white'
-  },
-  loader: {
-    color: '#be6a77 !important',
-  },
-  infoButton: {
-    marginTop: '10px',
-    color: '#be6a77',
-    fontWeight: 'bold',
-  },
-  detailsContainer: {
-    width: '100%',
-    marginTop: '20px',
-  },
-  historyCard: {
-    width: 200,
-    borderRadius: '10px',
-  },
-  historyCardMedia: {
-    height: 120,
-  },
-  historyCardContent: {
-    padding: '12px !important',
-  },
-  historyText: {
-    fontSize: '0.9rem',
-    lineHeight: 1.4,
-  },
+  appbar: { background: '#be6a77', boxShadow: 'none', color: 'white' },
+  loader: { color: '#be6a77 !important' },
+  infoButton: { marginTop: '10px', color: '#be6a77', fontWeight: 'bold' },
+  detailsContainer: { width: '100%', marginTop: '20px', padding: '10px' },
+  historyCard: { width: 200, borderRadius: '10px' },
+  historyCardMedia: { height: 120 },
+  historyCardContent: { padding: '12px !important' },
+  historyText: { fontSize: '0.9rem', lineHeight: 1.4 },
 }));
 
 export const ImageUpload = () => {
@@ -181,9 +138,8 @@ export const ImageUpload = () => {
   const [showDetails, setShowDetails] = useState(false);
   const [history, setHistory] = useState([]);
 
-  // <<< REVISED & ROBUST sendFile function >>>
   const sendFile = useCallback(async () => {
-    if (!selectedFile || !preview) return; // Guard clause
+    if (!selectedFile) return;
 
     setIsloading(true);
     let formData = new FormData();
@@ -191,6 +147,7 @@ export const ImageUpload = () => {
     try {
       const res = await axios({
         method: "post",
+        // Make sure your .env file points to the correct URL (e.g., http://localhost:8001/predict)
         url: process.env.REACT_APP_API_URL,
         data: formData,
       });
@@ -213,14 +170,13 @@ export const ImageUpload = () => {
     setSelectedFile(null);
     setPreview(null);
     setShowDetails(false);
-    // setHistory([]); // Optional: uncomment to also clear history
   };
-
+  
   useEffect(() => {
-    if (preview) {
+    if (selectedFile && preview) {
       sendFile();
     }
-  }, [preview, sendFile]);
+  }, [preview, selectedFile, sendFile]);
 
   const onSelectFile = (files) => {
     if (!files || files.length === 0) {
@@ -234,62 +190,60 @@ export const ImageUpload = () => {
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onload = () => {
-      // This is our diagnostic log
-      console.log("FileReader result (Base64 URL):", reader.result.substring(0, 100) + "..."); 
-      setPreview(reader.result);
-    };
-    reader.onerror = (error) => {
-      console.error("FileReader error:", error);
-    }
+    reader.onload = () => setPreview(reader.result);
+    reader.onerror = (error) => console.error("FileReader error:", error);
   };
-
+  
+  // <-- CHANGE #1: Simplified chart data logic. No need to remove "Potato___".
   const chartData = data?.all_percentages
-    ? Object.entries(data.all_percentages).map(([name, percentage]) => ({ name, percentage }))
+    ? Object.entries(data.all_percentages).map(([name, percentage]) => ({ name, percentage: parseFloat(percentage).toFixed(2) }))
     : [];
 
   return (
     <React.Fragment>
       <AppBar position="static" className={classes.appbar}>
-        <Toolbar>
-          <Typography className={classes.title} variant="h6" noWrap>Potato Leaf Disease Classification</Typography>
-          <div className={classes.grow} />
-          <Avatar src={cblogo} />
-        </Toolbar>
+        <Toolbar><Typography variant="h6" noWrap>Potato Leaf Disease Classification</Typography><div className={classes.grow} /><Avatar src={cblogo} /></Toolbar>
       </AppBar>
-      <Container maxWidth={false} className={classes.mainContainer} disableGutters={true}>
-        <Grid className={classes.gridContainer} container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+      <Container maxWidth={false} className={classes.mainContainer} disableGutters>
+        <Grid container className={classes.gridContainer} direction="row" justifyContent="center" alignItems="center" spacing={2}>
           <Grid item xs={12}>
-            <Card className={`${classes.imageCard} ${!image ? classes.imageCardEmpty : ''} ${showDetails ? classes.imageCardExpanded : ''}`}>
-              {image && <CardActionArea><CardMedia className={classes.media} image={preview} component="img" title="Contemplative Reptile" /></CardActionArea>}
+            <Card className={`${classes.imageCard} ${!image ? classes.imageCardEmpty : ''}`}>
+              {image && <CardActionArea><CardMedia className={classes.media} image={preview} component="img" /></CardActionArea>}
               {!image && <CardContent><DropzoneArea acceptedFiles={['image/*']} dropzoneText={"Drag and drop an image of a potato plant leaf to process"} onChange={onSelectFile} /></CardContent>}
               {data && (
                 <CardContent className={classes.detail}>
                   <TableContainer component={Paper} className={classes.tableContainer}>
-                    <Table className={classes.table} size="small" aria-label="simple table">
-                      <TableHead className={classes.tableHead}><TableRow className={classes.tableRow}><TableCell className={classes.tableCell1}>Label:</TableCell><TableCell align="right" className={classes.tableCell1}>Confidence:</TableCell></TableRow></TableHead>
-                      <TableBody className={classes.tableBody}><TableRow className={classes.tableRow}><TableCell component="th" scope="row" className={classes.tableCell}>{data.predicted_label}</TableCell><TableCell align="right" className={classes.tableCell}>{`${parseFloat(data.confidence).toFixed(2)}%`}</TableCell></TableRow></TableBody>
+                    <Table size="small">
+                      <TableHead><TableRow><TableCell className={classes.tableCell1}>Label:</TableCell><TableCell align="right" className={classes.tableCell1}>Confidence:</TableCell></TableRow></TableHead>
+                      <TableBody><TableRow>
+                        {/* <-- CHANGE #2: Use `data.predicted_label` instead of `data.class`. */}
+                        <TableCell component="th" scope="row" className={classes.tableCell}>{data.predicted_label}</TableCell>
+                        
+                        {/* <-- CHANGE #3: Display confidence directly. Do NOT multiply by 100. */}
+                        <TableCell align="right" className={classes.tableCell}>{`${parseFloat(data.confidence).toFixed(2)}%`}</TableCell>
+                      </TableRow></TableBody>
                     </Table>
                   </TableContainer>
                   <Button className={classes.infoButton} onClick={() => setShowDetails(!showDetails)}>{showDetails ? 'Hide Details' : 'Show Full Info'}</Button>
                   {showDetails && data.all_percentages && (
                     <div className={classes.detailsContainer}>
                       <Typography variant="h6" align="center" gutterBottom>Prediction Breakdown</Typography>
-                      <ResponsiveContainer width="100%" height={150}>
-                        <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 30, left: 80, bottom: 5 }}>
+                      <ResponsiveContainer width="100%" height={120}>
+                        <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                           <XAxis type="number" domain={[0, 100]} tickFormatter={(tick) => `${tick}%`} />
-                          <YAxis type="category" dataKey="name" width={150} /><Tooltip formatter={(value) => `${value}%`} />
-                          <Legend /><Bar dataKey="percentage" fill="#be6a77" barSize={30}><LabelList dataKey="percentage" position="right" formatter={(value) => `${value}%`} /></Bar>
+                          <YAxis type="category" dataKey="name" width={80} style={{ fontSize: '0.8rem' }} />
+                          <Tooltip formatter={(value) => `${value}%`} />
+                          <Bar dataKey="percentage" fill="#be6a77"><LabelList dataKey="percentage" position="right" formatter={(value) => `${value}%`} style={{ fontSize: '0.8rem' }} /></Bar>
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
                   )}
                 </CardContent>
               )}
-              {isLoading && <CardContent className={classes.detail}><CircularProgress color="secondary" className={classes.loader} /><Typography className={classes.title} variant="h6" noWrap>Processing</Typography></CardContent>}
+              {isLoading && <CardContent className={classes.detail}><CircularProgress className={classes.loader} /><Typography variant="h6" noWrap>Processing</Typography></CardContent>}
             </Card>
           </Grid>
-          {data && <Grid item className={classes.buttonGrid}><ColorButton variant="contained" className={classes.clearButton} color="primary" component="span" size="large" onClick={clearData} startIcon={<Clear fontSize="large" />}>Clear</ColorButton></Grid>}
+          {data && <Grid item className={classes.buttonGrid}><ColorButton variant="contained" className={classes.clearButton} color="primary" onClick={clearData} startIcon={<Clear />}>Clear</ColorButton></Grid>}
           
           {history.length > 0 && (
             <Grid item xs={12} style={{ marginTop: '2em' }}>
@@ -298,11 +252,13 @@ export const ImageUpload = () => {
                 {history.map((item, index) => (
                   <Grid item key={index}>
                     <Card className={classes.historyCard}>
-                      <CardMedia className={classes.historyCardMedia} image={item.imagePreview} component="img" title={item.predicted_label} />
+                      <CardMedia className={classes.historyCardMedia} image={item.imagePreview} component="img" />
                       <CardContent className={classes.historyCardContent}>
-                        <Typography className={classes.historyText} color="textSecondary">Previous Result #{index + 1}</Typography>
-                        <Typography className={classes.historyText} style={{ fontWeight: 'bold' }}>Label: {item.predicted_label}</Typography>
-                        <Typography className={classes.historyText} style={{ fontWeight: 'bold' }}>Confidence: {parseFloat(item.confidence).toFixed(2)}%</Typography>
+                        <Typography className={classes.historyText} color="textSecondary">Result #{index + 1}</Typography>
+                        {/* <-- CHANGE #2 (Also in history) --> */}
+                        <Typography className={classes.historyText} style={{ fontWeight: 'bold' }}>{item.predicted_label}</Typography>
+                        {/* <-- CHANGE #3 (Also in history) --> */}
+                        <Typography className={classes.historyText} style={{ fontWeight: 'bold' }}>{parseFloat(item.confidence).toFixed(2)}%</Typography>
                       </CardContent>
                     </Card>
                   </Grid>

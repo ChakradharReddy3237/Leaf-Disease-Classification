@@ -8,8 +8,8 @@ from io import BytesIO
 from PIL import Image
 import tensorflow as tf
 import requests
-from main_tf_serving import endpoint
-
+from .main_tf_serving import endpoint
+import keras
 
 app = FastAPI()
 # CORS middleware to allow requests from the frontend
@@ -25,8 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# MODEL = tf.keras.models.load_model("../saved_models/1/potato_disease_classifier.h5", compile=False)
-MODEL = tf.keras.models.load_model("../saved_models/5", compile=False)
+# MODEL = tf.keras.models.load_model("../saved_models/7")
 
 CLASS_NAMES = ["Early Blight","Late Blight","Healthy"]
 
@@ -36,12 +35,12 @@ async def ping():
     return {"message": "Hello, I am Chakri"}
 
 
-def read_file_As_image(data : bytes):
+def read_file_As_image(data : bytes) -> np.ndarray:
     data = BytesIO(data)
     image = Image.open(data).convert("RGB")
-    image = image.resize((254, 254))  # Resize to match model input size
-    # image = np.array(image) / 255.0  # Normalize the image
-    return np.array(image)
+    image = image.resize((256, 256))  # Resize to match model input size
+    image = np.array(image) / 255.0  # Normalize the image
+    return image
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
@@ -70,5 +69,5 @@ async def predict(file: UploadFile = File(...)):
     }
 
 
-# if __name__ == "__main__":
-#     uvicorn.run(app, host="localhost", port=8000)
+if __name__ == "__main__":
+    uvicorn.run(app, host="localhost", port=8001)

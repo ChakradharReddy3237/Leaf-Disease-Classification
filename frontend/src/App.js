@@ -1,8 +1,7 @@
-import React from "react";
-import Home from "./home";
+import { ImageUpload } from "./home";
 
 function App() {
-  return <Home />;
+  return <ImageUpload />;
 }
 
 export default App;
