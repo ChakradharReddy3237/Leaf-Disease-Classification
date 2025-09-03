@@ -38,8 +38,10 @@ async def ping():
 def read_file_As_image(data : bytes) -> np.ndarray:
     data = BytesIO(data)
     image = Image.open(data).convert("RGB")
-    image = image.resize((256, 256))  # Resize to match model input size
-    image = np.array(image) / 255.0  # Normalize the image
+    image = image.resize((256, 256)) 
+    # image = np.array(image) / 255.0  
+    # image = (np.array(image) / 127.5) - 1.0
+    image = np.array(image)
     return image
 
 @app.post("/predict")
@@ -54,6 +56,12 @@ async def predict(file: UploadFile = File(...)):
 
     response = requests.post(endpoint, json=json_data)
     prediction = np.array(response.json()['predictions'][0])
+    
+    # ==========================================================
+    #  ADD THIS LINE FOR DEBUGGING
+    print(f"Raw prediction array from model: {prediction}")
+    # ==========================================================
+
 
     predicted_label = CLASS_NAMES[np.argmax(prediction)]
     confidence = round(100 * np.max(prediction), 2)
