@@ -19,16 +19,16 @@ A huge thank you to Dhaval Patel for creating such a high-quality, in-depth tuto
   Record a short GIF of you uploading an image and getting a prediction.
   Use a tool like ScreenToGif (Windows) or Kap (macOS).
 -->
-### Live Demo
+### 🚀 Live Demo
 
 <p align="center">
-  <a href="PASTE_YOUR_CORRECT_GOOGLE_DRIVE_LINK_HERE">
+  <a href="https://drive.google.com/file/d/YOUR_CORRECT_SHAREABLE_LINK_ID/view?usp=sharing">
+    <!-- This is the line that needs to be perfect -->
     <img src=".github/assets/demo_thumbnail.png" alt="Watch the video demo" width="800">
   </a>
   <br>
-  <em><a href="https://drive.google.com/drive/u/5/folders/10Nt9Ugr_lV2arjnt9mLa3so3ttXC7j-G">Click Here to Watch the Full Demo on Google Drive</a></em>
+  <em><a href="https://drive.google.com/file/d/https://drive.google.com/drive/u/5/folders/10Nt9Ugr_lV2arjnt9mLa3so3ttXC7j-G/view?usp=sharing">Click Here to Watch the Full Demo on Google Drive</a></em>
 </p>
-
 
 
 
